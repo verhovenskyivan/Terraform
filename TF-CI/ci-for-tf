@@ -1,0 +1,24 @@
+stages:
+    - plan
+    - apply
+
+variables:
+    TF_CLI_ARGS:  "-input=false"
+
+before_script:
+    - apt-get update -qy
+    - apt-get install -y unzip
+    - wget https://releases.hashicorp.com/terraform/0.15.5/terraform_0.15.5_linux_amd64.zip
+    - unzip terraform_0.15.5_linux_amd64.zip -d /usr/local/bin/
+
+terraform_plan:
+    stage: plan
+    script:
+        - terraform init
+        - terraform plan -out=tfplan
+        - cat tfplan
+    artifacts:
+        paths:
+            - paths
+    only:
+        - merge_request
